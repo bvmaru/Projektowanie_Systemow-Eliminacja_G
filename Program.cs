@@ -60,7 +60,6 @@ gauss.ColectGraphData();
 //Console.WriteLine(gauss.nest2.W1.ToArray().ToString());
 Console.WriteLine(gauss.aMatrix);
 
-if (gauss.nest2.Im[0] == gauss.nest2.Ia1[0]) Console.WriteLine("Its working>???");
 
 //gauss.aMatrix = DenseMatrix.OfArray(new double[,]
 //{

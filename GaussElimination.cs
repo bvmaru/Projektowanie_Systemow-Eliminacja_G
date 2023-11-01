@@ -35,7 +35,7 @@ namespace Eliminacja_G
             }
         }
 
-        public void ColectGraphData()
+        public void CollectGraphData()
         {
             nest1 = new LoopNest();
             nest2 = new LoopNest();
