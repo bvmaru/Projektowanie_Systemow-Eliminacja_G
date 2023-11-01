@@ -56,7 +56,7 @@ Console.WriteLine($"Average time: {timeTable.Average()} ms\n");
 //});
 //gauss.mMatrix = Matrix<double>.Build.Dense(3, 3);
 
-gauss.ColectGraphData();
+gauss.CollectGraphData();
 //Console.WriteLine(gauss.nest2.W1.ToArray().ToString());
 Console.WriteLine(gauss.aMatrix);
 
