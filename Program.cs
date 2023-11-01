@@ -1,79 +1,74 @@
 ﻿using Eliminacja_G;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using System.Diagnostics;
 
 
-int sampleGroup = 15;
+int sampleGroup = 1;
 Stopwatch timer = new Stopwatch();
 GaussElimination gauss = new GaussElimination();
 Random random = new Random();
 double[] timeTable = new double[sampleGroup];
-//List<double> timeTable = new List<double>();
+//List<double> timeTable = new List<double>(); // this solution is slower
 
-int N = 200;
+int N = 4;
 gauss.nSize = N;
 
 
-for (int i = 0; i< sampleGroup; i++)
-{ 
-    gauss.aMatrix = Matrix<double>.Build.Random(N, N + 1).Multiply(random.Next(1,100));
-    gauss.mMatrix = Matrix<double>.Build.Dense(N,N);
+
+for (int i = 0; i < sampleGroup; i++) // measuring time for the declared group
+{
+    //gauss.aMatrix = Matrix<double>.Build.Random(N, N + 1).Multiply(random.Next(1, 100)); //floating point data
+    gauss.aMatrix = Matrix<double>.Build.Dense(N, N + 1, (i, j) => random.Next(-100, 100) - i + j); // integer data
+    gauss.mMatrix = Matrix<double>.Build.Dense(N, N - 1);
     timer.Restart();
     gauss.Calculate();
     timeTable[i] = timer.Elapsed.TotalMilliseconds;
-    //timeTable.Add(timer.Elapsed.TotalMilliseconds);
+    //timeTable.Add(timer.Elapsed.TotalMilliseconds); //this solution is slower
     timer.Stop();
 }
 
 Console.WriteLine($"Time measurements for the N = {N}:");
-for (int i = 0; i < sampleGroup; i++) Console.WriteLine($"{i+1}) {timeTable[i]} ms");
-Console.WriteLine($"Average time: {timeTable.Average()} ms");
+for (int i = 0; i < sampleGroup; i++) Console.WriteLine($"{i + 1}) {timeTable[i]} ms");
+Console.WriteLine($"Average time: {timeTable.Average()} ms\n");
 
 
 
-//double[,] m = new double[N, N-1];
+//-------------------- testing area----------------------------------------------------------------------------------------------------------------------
 
-//void Calculate()
+//gauss.aMatrix = DenseMatrix.OfArray(new double[,]
 //{
-//    for (int i = 0; i < N - 1; i++)
-//    {
-//        for (int j = i + 1; j < N; j++)
-//        {
-//            if (a[i, i] != 0)
-//            {
-//                m[j, i] = -a[j, i] / a[i, i];
-//            }
-//            else
-//            {
-//                m[j, i] = 0;
-//            }
+//    {2, -2, -2, -2},
+//    {-1, 3, 4, 4},
+//    {5, 2, 3, 8}
+//});
+//gauss.mMatrix = Matrix<double>.Build.Dense(3, 3);
 
-//            for (int k = i + 1; k < N + 1; k++)
-//            {
-//                a[j, k] = a[j, k] + m[j, i] * a[i, k];
-//            }
-//        }
-//    }
-//}
+//gauss.Calculate();
 
+//Console.WriteLine(gauss.aMatrix);
 
-
-//for(int i=0; i<N-1; i++)
+//gauss.aMatrix = DenseMatrix.OfArray(new double[,]
 //{
-//    for(int j=i+1; j<N; j++)
-//    {
-//        if (A[i, i] != 0) M[j, i] = -A[j, i] / A[i, i];
-//        else M[j, i] = 0;
-//    }
-//    for (int j = i + 1; j < N; j++)
-//    {
-//        for (int k = i + 1; k < N+1; k++)
-//        {
-//            A[j, k] = A[j, k] + M[j, i] * A[i, k];
-//        }
-//    }
-//}
-Console.WriteLine("Hello, World!");
+//    {2, -2, -2, -2},
+//    {-1, 3, 4, 4},
+//    {5, 2, 3, 8}
+//});
+//gauss.mMatrix = Matrix<double>.Build.Dense(3, 3);
+
+gauss.ColectGraphData();
+//Console.WriteLine(gauss.nest2.W1.ToArray().ToString());
+Console.WriteLine(gauss.aMatrix);
+
+if (gauss.nest2.Im[0] == gauss.nest2.Ia1[0]) Console.WriteLine("Its working>???");
+
+//gauss.aMatrix = DenseMatrix.OfArray(new double[,]
+//{
+//    {2, -2, -2, -2},
+//    {-1, 3, 4, 4},
+//    {5, 2, 3, 8}
+//});
+//gauss.mMatrix = Matrix<double>.Build.Dense(3, 3);
+
 
 
