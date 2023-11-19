@@ -4,7 +4,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using System.Diagnostics;
 
 
-int sampleGroup = 1;
+int sampleGroup = 5;
 Stopwatch timer = new Stopwatch();
 GaussElimination gauss = new GaussElimination();
 Random random = new Random();
@@ -35,6 +35,7 @@ Console.WriteLine($"Average time: {timeTable.Average()} ms\n");
 
 
 //-------------------- testing area----------------------------------------------------------------------------------------------------------------------
+Console.WriteLine("-------------------- testing area--------------------------------------------------------------------------");
 
 //gauss.aMatrix = DenseMatrix.OfArray(new double[,]
 //{
@@ -48,6 +49,8 @@ Console.WriteLine($"Average time: {timeTable.Average()} ms\n");
 
 //Console.WriteLine(gauss.aMatrix);
 
+//Console.WriteLine("-----------------------------------------------------------------");
+
 //gauss.aMatrix = DenseMatrix.OfArray(new double[,]
 //{
 //    {2, -2, -2, -2},
@@ -58,7 +61,7 @@ Console.WriteLine($"Average time: {timeTable.Average()} ms\n");
 
 gauss.CollectGraphData();
 //Console.WriteLine(gauss.nest2.W1.ToArray().ToString());
-Console.WriteLine(gauss.aMatrix);
+
 
 
 //gauss.aMatrix = DenseMatrix.OfArray(new double[,]
