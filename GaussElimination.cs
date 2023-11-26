@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using OfficeOpenXml;
 
 namespace Eliminacja_G
 {
@@ -8,8 +9,9 @@ namespace Eliminacja_G
         public Matrix<double> mMatrix { get; set; }
         public Matrix<int> dataMatrix { get; set; }
         public int nSize { get; set; }
-        public LoopNest nest1 { get; set; }
-        public LoopNest nest2 { get; set; }
+        public List<LoopNest> nest1 { get; set; }
+        public List<LoopNest> nest2 { get; set; }
+        public List<LoopNest> nest3 { get; set; }
 
 
         public void Calculate()
@@ -37,12 +39,15 @@ namespace Eliminacja_G
 
         public void CollectGraphData()
         {
-            nest1 = new LoopNest();
-            nest2 = new LoopNest();
+            nest1 = new List<LoopNest>();
+            nest2 = new List<LoopNest>();
+            nest3 = new List<LoopNest>();
+            //LoopNest temp = new LoopNest();
             int nr1 = 0;
             int nr2 = 0;
             string ne1 = "";
             string ne2 = "";
+            string ne3 = "";
             for (int i1 = 0; i1 < nSize - 1; i1++)
             {
                 for (int i2 = i1 + 1; i2 < nSize; i2++)
@@ -51,48 +56,128 @@ namespace Eliminacja_G
                     {
                         if (aMatrix[i1, i1] != 0)
                         {
+                            LoopNest temp = new LoopNest();
                             mMatrix[i2, i1] = -aMatrix[i2, i1] / aMatrix[i1, i1];
-                            nest1.W1.Add(i1 + 1); //1 is being added so we can compare it with the presentation, we might mot need it later in the project 
-                            nest1.W2.Add(i2 + 1);
-                            nest1.W3.Add(i3 + 1);
-                            nest1.Ia1.Add((i2 + 1, i3 + 1));
-                            nest1.Ia2.Add((i1 + 1, i3 + 1));
-                            nest1.Im.Add((i2 + 1, i1 + 1));
+                            temp.nr = (i1 + 1) * 100 + (i2 + 1) * 10 + (i3 + 1);
+                            temp.W1 = (i1 + 1); //1 is being added so we can compare it with the presentation, we might mot need it later in the project 
+                            temp.W2 = (i2 + 1);
+                            temp.W3 = (i3 + 1);
+                            temp.Ia11 = (i1 + 1, i1 + 1);
+                            temp.Ia21 = (i2 + 1, i1 + 1);
+                            temp.Ia13 = (0, 0);
+                            temp.Ia23 = (0, 0);
+                            temp.Im = (i2 + 1, i1 + 1);
                             nr2++;
-                            ne2 += $"{nr2} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} |\n";
+                            ne2 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} |\n";
+                            nest1.Add(temp);
                         }
                         else
                         {
+                            LoopNest temp = new LoopNest();
                             mMatrix[i2, i1] = 0;
-                            nest1.W1.Add(i1 + 1); //1 is being added so we can compare it with the presentation, we might mot need it later in the project 
-                            nest1.W2.Add(i2 + 1);
-                            nest1.W3.Add(i3 + 1);
-                            nest1.Ia1.Add((i2 + 1, i3 + 1));
-                            nest1.Ia2.Add((i1 + 1, i3 + 1));
-                            nest1.Im.Add((i2 + 1, i1 + 1));
+                            temp.nr = (i1+1) * 100 + (i2+1) * 10 + (i3+1);
+                            temp.W1 = (i1 + 1); //1 is being added so we can compare it with the presentation, we might mot need it later in the project 
+                            temp.W2 = (i2 + 1);
+                            temp.W3 = (i3 + 1);
+                            temp.Ia11 = (i1 + 1, i1 + 1);
+                            temp.Ia21 = (i2 + 1, i1 + 1);
+                            temp.Ia13 = (0, 0);
+                            temp.Ia23 = (0, 0);
+                            temp.Im = (i2 + 1, i1 + 1);
                             nr2++;
                             //Console.WriteLine($"{nr2} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i3 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i1 + 1} | ");
-                            ne2 += $"{nr2} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} |\n";
+                            ne2 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} |\n";
+                            nest1.Add(temp);
                         }
                     }
                     for (int i3 = i1 + 1; i3 < nSize +1; i3++) //why the nSize parameter has to be smaller compared to the one in working algorithm??? do we just ignore the B vector?
                     {
+                        LoopNest temp = new LoopNest();
                         aMatrix[i2, i3] = aMatrix[i2, i3] + mMatrix[i2, i1] * aMatrix[i1, i3];
                         nr1++;
-                        nest2.nr.Add(nr1);
-                        nest2.W1.Add(i1 + 1); //1 is being added so we can compare it with the presentation, we might mot need it later in the project 
-                        nest2.W2.Add(i2 + 1);
-                        nest2.W3.Add(i3 + 1);
-                        nest2.Ia1.Add((i2 + 1, i3 + 1));
-                        nest2.Ia2.Add((i1 + 1, i3 + 1));
-                        nest2.Im.Add((i2 + 1, i1 + 1));
-                        ne1 += $"{nr1} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i3 + 1} |\n";
+                        temp.nr = (i1 + 1) * 100 + (i2 + 1) * 10 + (i3 + 1);
+                        temp.W1 = (i1 + 1); //1 is being added so we can compare it with the presentation, we might mot need it later in the project 
+                        temp.W2 = (i2 + 1);
+                        temp.W3 = (i3 + 1);
+                        temp.Ia13 = ((i1 + 1, i3 + 1));
+                        temp.Ia23 = ((i2 + 1, i3 + 1));
+                        temp.Ia11 = ((0, 0));
+                        temp.Ia21 = ((0, 0));
+                        temp.Im = ((i2 + 1, i1 + 1));
+                        ne1 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i3 + 1} |\n";
                         //Console.WriteLine($"{nr1} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i3 + 1} | ");
+                        nest2.Add(temp);
                     }
                 }
             }
             File.WriteAllText("D:\\Nest\\Nest1.txt", ne1);
             File.WriteAllText("D:\\Nest\\Nest2.txt", ne2);
+            while (nest1.Any() || nest2.Any())
+            {
+                if (nest1.Any())
+                {
+                    if (nest1[0].nr < nest2[0].nr)
+                    {
+                        nest3.Add(nest1[0]);
+                        nest1.Remove(nest1[0]);
+                    }
+                    else
+                    {
+                        nest3.Add(nest2[0]);
+                        nest2.Remove(nest2[0]);
+                    }
+                }
+                else
+                {
+                    nest3.Add(nest2[0]);
+                    nest2.Remove(nest2[0]);
+                }
+            }
+            ne3 += $"Nr | W1 | W2 | W3 | Im | Ia11 | Ia13 | Ia21 | Ia23 |\n";
+            for (int i = 0; i < nest3.Count; i++)
+            {
+                //ne3 += $"{i+1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} |\n";
+               ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+            }
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                // Add a new worksheet to the Excel package
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                // Populate some data in the worksheet
+                worksheet.Cells["A1"].Value = "Nr";
+                worksheet.Cells["B1"].Value = "W1";
+                worksheet.Cells["C1"].Value = "W2";
+                worksheet.Cells["D1"].Value = "W3";
+                worksheet.Cells["E1"].Value = "Im";
+                worksheet.Cells["F1"].Value = "Ia11";
+                worksheet.Cells["G1"].Value = "Ia13";
+                worksheet.Cells["H1"].Value = "Ia21";
+                worksheet.Cells["I1"].Value = "Ia23";
+
+                for (int i = 0; i < nest3.Count; i++)
+                {
+                    worksheet.Cells[$"A{i+2}"].Value = $"{i + 1}";
+                    worksheet.Cells[$"B{i + 2}"].Value = $"{nest3[i].W1}";
+                    worksheet.Cells[$"C{i + 2}"].Value = $"{nest3[i].W2}";
+                    worksheet.Cells[$"D{i + 2}"].Value = $"{nest3[i].W3}";
+                    worksheet.Cells[$"E{i + 2}"].Value = $"{nest3[i].Im}";
+                    worksheet.Cells[$"F{i + 2}"].Value = $"{nest3[i].Ia11}";
+                    worksheet.Cells[$"G{i + 2}"].Value = $"{nest3[i].Ia13}";
+                    worksheet.Cells[$"H{i + 2}"].Value = $"{nest3[i].Ia21}";
+                    worksheet.Cells[$"I{i + 2}"].Value = $"{nest3[i].Ia23}";
+
+                    //ne3 += $"{i+1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} |\n";
+                    ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+                }
+
+                // Save the Excel package to a file
+                var excelFile = new FileInfo("D:\\Nest\\Nest3.xlsx");
+                package.SaveAs(excelFile);
+            }
+
+            File.WriteAllText("D:\\Nest\\Nest3.txt", ne3);
         }
     }
 }

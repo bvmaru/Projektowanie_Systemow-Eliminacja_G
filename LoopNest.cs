@@ -3,23 +3,27 @@
     public class LoopNest
     {
         //Class represents the table model on the basis of which the graph can be made.
-        public List<int> nr { get; set; }
-        public List<int> W1 { get; set; }
-        public List<int> W2 { get; set; }
-        public List<int> W3 { get; set; }
-        public List<ValueTuple<int,int>> Im { get; set; }
-        public List<ValueTuple<int, int>> Ia2 { get; set; }
-        public List<ValueTuple<int, int>> Ia1 { get; set; }
+        public int nr { get; set; }
+        public int W1 { get; set; }
+        public int W2 { get; set; }
+        public int W3 { get; set; }
+        public ValueTuple<int,int> Im { get; set; }
+        public ValueTuple<int, int> Ia11 { get; set; }
+        public ValueTuple<int, int> Ia13 { get; set; }
+        public ValueTuple<int, int> Ia21 { get; set; }
+        public ValueTuple<int, int> Ia23 { get; set; }
 
-        public LoopNest()
-        {
-            nr = new List<int>();
-            W1 = new List<int>();
-            W2 = new List<int>();
-            W3 = new List<int>();
-            Im = new List<ValueTuple<int,int>>();
-            Ia2 = new List<ValueTuple<int,int>>();
-            Ia1 = new List<ValueTuple<int,int>>();
-        }
+        //public LoopNest()
+        //{
+        //    nr = new int();
+        //    W1 = new int();
+        //    W2 = new int();
+        //    W3 = new int();
+        //    Im = new ValueTuple<int, int>();
+        //    Ia11 = new ValueTuple<int, int>();
+        //    Ia13 = new ValueTuple<int, int>();
+        //    Ia21 = new ValueTuple<int, int>();
+        //    Ia23 = new ValueTuple<int, int>();
+        //}
     }
 }
