@@ -67,8 +67,9 @@ namespace Eliminacja_G
                             temp.Ia13 = (0, 0);
                             temp.Ia23 = (0, 0);
                             temp.Im = (i2 + 1, i1 + 1);
+                            temp.Operation = "-/";
                             nr2++;
-                            ne2 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} |\n";
+                            ne2 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} | -/ |\n";
                             nest1.Add(temp);
                         }
                         else
@@ -84,9 +85,10 @@ namespace Eliminacja_G
                             temp.Ia13 = (0, 0);
                             temp.Ia23 = (0, 0);
                             temp.Im = (i2 + 1, i1 + 1);
+                            temp.Operation = "-/";
                             nr2++;
                             //Console.WriteLine($"{nr2} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i3 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i1 + 1} | ");
-                            ne2 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} |\n";
+                            ne2 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i1 + 1} | {i2 + 1} {i1 + 1} | -/ |\n";
                             nest1.Add(temp);
                         }
                     }
@@ -104,14 +106,15 @@ namespace Eliminacja_G
                         temp.Ia11 = ((0, 0));
                         temp.Ia21 = ((0, 0));
                         temp.Im = ((i2 + 1, i1 + 1));
-                        ne1 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i3 + 1} |\n";
+                        temp.Operation = "+*";
+                        ne1 += $"{temp.nr} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i3 + 1} | +* |\n";
                         //Console.WriteLine($"{nr1} | {i1 + 1} | {i2 + 1} | {i3 + 1} | {i2 + 1} {i1 + 1}| {i1 + 1} {i3 + 1} | {i2 + 1} {i3 + 1} | ");
                         nest2.Add(temp);
                     }
                 }
             }
-            File.WriteAllText("D:\\Nest\\Nest1.txt", ne1);
-            File.WriteAllText("D:\\Nest\\Nest2.txt", ne2);
+            File.WriteAllText("C:\\Nest\\Nest1.txt", ne1);
+            File.WriteAllText("C:\\Nest\\Nest2.txt", ne2);
             while (nest1.Any() || nest2.Any())
             {
                 if (nest1.Any())
@@ -137,7 +140,10 @@ namespace Eliminacja_G
             for (int i = 0; i < nest3.Count; i++)
             {
                 //ne3 += $"{i+1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} |\n";
-               ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+                if(i>=9)
+                    ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} | {nest3[i].Operation} |\n";
+                else
+                    ne3 += $"0{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} | {nest3[i].Operation} |\n";
             }
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -155,6 +161,7 @@ namespace Eliminacja_G
                 worksheet.Cells["G1"].Value = "Ia13";
                 worksheet.Cells["H1"].Value = "Ia21";
                 worksheet.Cells["I1"].Value = "Ia23";
+                worksheet.Cells["J1"].Value = "Operation";
 
                 for (int i = 0; i < nest3.Count; i++)
                 {
@@ -167,17 +174,18 @@ namespace Eliminacja_G
                     worksheet.Cells[$"G{i + 2}"].Value = $"{nest3[i].Ia13}";
                     worksheet.Cells[$"H{i + 2}"].Value = $"{nest3[i].Ia21}";
                     worksheet.Cells[$"I{i + 2}"].Value = $"{nest3[i].Ia23}";
+                    worksheet.Cells[$"J{i + 2}"].Value = nest3[i].Operation;
 
                     //ne3 += $"{i+1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} |\n";
-                    ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+                    //ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
                 }
 
                 // Save the Excel package to a file
-                var excelFile = new FileInfo("D:\\Nest\\Nest3.xlsx");
+                var excelFile = new FileInfo("C:\\Nest\\Nest3.xlsx");
                 package.SaveAs(excelFile);
             }
 
-            File.WriteAllText("D:\\Nest\\Nest3.txt", ne3);
+            File.WriteAllText("C:\\Nest\\Nest3.txt", ne3);
         }
     }
 }

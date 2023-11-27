@@ -12,6 +12,7 @@
         public ValueTuple<int, int> Ia13 { get; set; }
         public ValueTuple<int, int> Ia21 { get; set; }
         public ValueTuple<int, int> Ia23 { get; set; }
+        public string Operation { get; set; }
 
         //public LoopNest()
         //{
