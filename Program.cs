@@ -60,6 +60,7 @@ Console.WriteLine("-------------------- testing area----------------------------
 //gauss.mMatrix = Matrix<double>.Build.Dense(3, 3);
 
 gauss.CollectGraphData();
+gauss.graphArcs();
 //Console.WriteLine(gauss.nest2.W1.ToArray().ToString());
 
 

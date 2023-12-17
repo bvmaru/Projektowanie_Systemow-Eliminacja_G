@@ -158,7 +158,7 @@ namespace Eliminacja_G
 
                 for (int i = 0; i < nest3.Count; i++)
                 {
-                    worksheet.Cells[$"A{i+2}"].Value = $"{i + 1}";
+                    worksheet.Cells[$"A{i + 2}"].Value = $"{i + 1}";
                     worksheet.Cells[$"B{i + 2}"].Value = $"{nest3[i].W1}";
                     worksheet.Cells[$"C{i + 2}"].Value = $"{nest3[i].W2}";
                     worksheet.Cells[$"D{i + 2}"].Value = $"{nest3[i].W3}";
@@ -169,7 +169,14 @@ namespace Eliminacja_G
                     worksheet.Cells[$"I{i + 2}"].Value = $"{nest3[i].Ia23}";
 
                     //ne3 += $"{i+1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} |\n";
-                    ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+                    if (i < 9)
+                    {
+                        ne3 += $"0{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+                    }
+                    else
+                    {
+                        ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+                    }
                 }
 
                 // Save the Excel package to a file
@@ -178,6 +185,66 @@ namespace Eliminacja_G
             }
 
             File.WriteAllText("D:\\Nest\\Nest3.txt", ne3);
+        }
+        public void graphArcs()
+        {
+            List<ValueTuple<int, int, string>> ArcsList = new List<ValueTuple<int, int, string>>();
+
+            for (int i = 0; i < nest3.Count; i++) // horizontal arcs
+            {
+                for(int j = i+1; j<nest3.Count; j++)
+                {
+                    if (nest3[i].Im == nest3[j].Im)
+                    {
+                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1*100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "->"));
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < nest3.Count; i++) // horizontal arcs part2
+            {
+                for (int j = i + 1; j < nest3.Count; j++)
+                {
+                    if ((nest3[i].Ia11 == nest3[j].Ia11 && nest3[i].Ia11 != (0,0) || nest3[i].Ia13 == nest3[j].Ia13 && nest3[i].Ia13 != (0, 0)))
+                    {
+                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "-^"));
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < nest3.Count; i++) // vertical arcs
+            {
+                for (int j = i + 1; j < nest3.Count; j++)
+                {
+                    if (nest3[i].Ia23!=(0,0) && (nest3[i].Ia23 == nest3[j].Ia21 || nest3[i].Ia23 == nest3[j].Ia23))
+                    {
+                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "|"));
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < nest3.Count; i++) // oblique arcs
+            {
+                for (int j = i + 1; j < nest3.Count; j++)
+                {
+                    if (nest3[i].Ia23 != (0, 0) && (nest3[i].Ia23 == nest3[j].Ia11 || nest3[i].Ia23 == nest3[j].Ia13))
+                    {   
+                        int count = 0;
+                        for(int k = i; k<nest3.Count; k++)
+                        {
+                            if (nest3[i].Ia23 == nest3[k].Ia23) count++;
+                        }
+                        if(count > 1) break;
+                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "/"));
+                        break;
+                    }
+                }
+            }
+            int a = 0;
+
         }
     }
 }
