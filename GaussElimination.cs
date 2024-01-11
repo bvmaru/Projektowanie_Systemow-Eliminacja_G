@@ -12,6 +12,7 @@ namespace Eliminacja_G
         public List<LoopNest> nest1 { get; set; }
         public List<LoopNest> nest2 { get; set; }
         public List<LoopNest> nest3 { get; set; }
+        List<ValueTuple<int, int, string>> ArcsList = new List<ValueTuple<int, int, string>>();
 
 
         public void Calculate()
@@ -189,7 +190,7 @@ namespace Eliminacja_G
         }
         public void graphArcs()
         {
-            List<ValueTuple<int, int, string>> ArcsList = new List<ValueTuple<int, int, string>>();
+            List<ValueTuple<int, int, string>> ArcsListInternal = new List<ValueTuple<int, int, string>>();
 
             for (int i = 0; i < nest3.Count; i++) // horizontal arcs
             {
@@ -197,7 +198,7 @@ namespace Eliminacja_G
                 {
                     if (nest3[i].Im == nest3[j].Im)
                     {
-                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1*100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "->"));
+                        ArcsListInternal.Add(new ValueTuple<int, int, string>(nest3[i].W1*100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "->"));
                         break;
                     }
                 }
@@ -209,7 +210,7 @@ namespace Eliminacja_G
                 {
                     if ((nest3[i].Ia11 == nest3[j].Ia11 && nest3[i].Ia11 != (0,0) || nest3[i].Ia13 == nest3[j].Ia13 && nest3[i].Ia13 != (0, 0)))
                     {
-                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "-^"));
+                        ArcsListInternal.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "-^"));
                         break;
                     }
                 }
@@ -221,7 +222,7 @@ namespace Eliminacja_G
                 {
                     if (nest3[i].Ia23!=(0,0) && (nest3[i].Ia23 == nest3[j].Ia21 || nest3[i].Ia23 == nest3[j].Ia23))
                     {
-                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "|"));
+                        ArcsListInternal.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "|"));
                         break;
                     }
                 }
@@ -239,13 +240,70 @@ namespace Eliminacja_G
                             if (nest3[i].Ia23 == nest3[k].Ia23) count++;
                         }
                         if(count > 1) break;
-                        ArcsList.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "/"));
+                        ArcsListInternal.Add(new ValueTuple<int, int, string>(nest3[i].W1 * 100 + nest3[i].W2 * 10 + nest3[i].W3, nest3[j].W1 * 100 + nest3[j].W2 * 10 + nest3[j].W3, "/"));
                         break;
                     }
                 }
             }
-            int a = 0;
 
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                // Add a new worksheet to the Excel package
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                // Populate some data in the worksheet
+                worksheet.Cells["A1"].Value = "From";
+                worksheet.Cells["B1"].Value = "To";
+                worksheet.Cells["C1"].Value = "Direction";
+
+                for (int i = 0; i < ArcsListInternal.Count; i++)
+                {
+                    worksheet.Cells[$"A{i + 2}"].Value = $"{ArcsListInternal[i].Item1}";
+                    worksheet.Cells[$"B{i + 2}"].Value = $"{ArcsListInternal[i].Item2}";
+                    worksheet.Cells[$"C{i + 2}"].Value = $"{ArcsListInternal[i].Item3}";
+
+                    //ne3 += $"{i+1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} |\n";
+                    //ne3 += $"{i + 1} | {nest3[i].W1} | {nest3[i].W2} | {nest3[i].W3} | {nest3[i].Im}| {nest3[i].Ia11} | {nest3[i].Ia13} | {nest3[i].Ia21} | {nest3[i].Ia23} |\n";
+                }
+
+                // Save the Excel package to a file
+                var excelFile = new FileInfo("D:\\Nest\\arcs.xlsx");
+                package.SaveAs(excelFile);
+            }
+
+            ArcsList = ArcsListInternal;
+
+        }
+
+        public void architectureCreator(List<int[]> fs)
+        {
+
+            HashSet<(int,int)> processors = new HashSet<(int, int)>();
+
+            List<ValueTuple<LoopNest, (int, int), int>> operations = new List<(LoopNest, (int, int), int)>();
+
+
+            foreach (var nest in nest3)
+            {
+                (int, int) number = (0, 0);
+                number.Item1 = fs[0][0] * nest.W1 + fs[0][1] * nest.W2 + fs[0][2] * nest.W3;
+
+                if(fs.Count==2)
+                    number.Item2 = fs[1][0] * nest.W1 + fs[1][1] * nest.W2 + fs[1][2] * nest.W3;
+
+
+
+                ValueTuple<LoopNest, (int, int), int> record = (nest, number, nest.W1 + nest.W2 + nest.W3);
+
+                operations.Add(record);
+                processors.Add(number);
+            }
+
+            foreach(var processor in processors)
+            {
+            }
+
+            var a = 0;
         }
     }
 }

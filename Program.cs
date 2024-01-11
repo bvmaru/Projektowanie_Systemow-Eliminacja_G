@@ -1,6 +1,7 @@
 ﻿using Eliminacja_G;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using System;
 using System.Diagnostics;
 
 
@@ -61,6 +62,8 @@ Console.WriteLine("-------------------- testing area----------------------------
 
 gauss.CollectGraphData();
 gauss.graphArcs();
+
+gauss.architectureCreator(new List<int[]> { new int[] { 1, 0, -1 }, new int[] { 1, 0, 1 } });
 //Console.WriteLine(gauss.nest2.W1.ToArray().ToString());
 
 
